@@ -358,6 +358,8 @@ export class BlockNoteEditor<
 
   public readonly _tiptapEditor: TiptapEditor & {
     contentComponent: any;
+    /** Set by React `BlockNoteViewEditor` to match TipTap `EditorContent`. */
+    isEditorContentInitialized?: boolean;
   };
 
   /**

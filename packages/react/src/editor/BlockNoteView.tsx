@@ -321,7 +321,13 @@ export const BlockNoteViewEditor = (props: { children?: ReactNode }) => {
       editor._tiptapEditor.contentComponent = portalManager;
       if (element) {
         editor.mount(element, { portalTarget });
+        // Mirror TipTap `EditorContent`: after mount, ReactRenderer flushSyncs
+        // mark view portals so ProseMirror can map selection into the DOM.
+        // Without this, insertInlineContent of a React style leaves the DOM
+        // caret at the start of the paragraph (#3064).
+        editor._tiptapEditor.isEditorContentInitialized = true;
       } else {
+        editor._tiptapEditor.isEditorContentInitialized = false;
         editor.unmount();
       }
     },

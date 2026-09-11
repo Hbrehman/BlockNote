@@ -131,16 +131,11 @@ function mountEditor(initialContent: any[]): ReproEditor {
     root!.render(<BlockNoteViewRaw editor={editor as any} />);
   });
 
-  // TipTap's `ReactRenderer` only renders a node view synchronously (via
-  // `flushSync`) when `isEditorContentInitialized` is set; otherwise it defers
-  // to a microtask. TipTap's own `PureEditorContent` sets it, but BlockNote
-  // replaces that component with its own mounting (`BlockNoteView.tsx`) and
-  // never does, so BlockNote currently gets the deferred path by accident.
-  // Set it here so node views mount the way they do for every other TipTap
-  // React user — and the way they do for anyone resolving `@tiptap/react`
-  // below 3.22, where this flag was still the always-true `isInitialized`.
-  // That is the configuration #2937 was reported against.
-  (editor as any)._tiptapEditor.isEditorContentInitialized = true;
+  // TipTap's `ReactRenderer` flushSyncs node/mark view portals when
+  // `isEditorContentInitialized` is set. `BlockNoteViewEditor` now mirrors
+  // TipTap `EditorContent` and sets that flag on mount (#3064), which is also
+  // the configuration #2937 was reported against (`@tiptap/react` < 3.22 used
+  // the always-true `isInitialized` for the same purpose).
 
   return editor;
 }
